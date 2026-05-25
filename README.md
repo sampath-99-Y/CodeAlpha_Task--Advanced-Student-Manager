@@ -95,17 +95,6 @@ Advanced-Student-Manager/
 
 ---
 
-# 📸 Project Preview
-
-Add your project screenshots here.
-
-Example:
-
-```md
-![Project Screenshot](screenshot.png)
-```
-
----
 
 # 🔮 Future Improvements
 
