@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GradeFlow — Student Grade Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect x="2" y="2" width="8" height="8" rx="2.5" fill="#3B6FE8"/>
+        <rect x="12" y="2" width="8" height="8" rx="2.5" fill="#7C3AED" opacity=".7"/>
+        <rect x="2" y="12" width="8" height="8" rx="2.5" fill="#0EA5E9" opacity=".7"/>
+        <rect x="12" y="12" width="8" height="8" rx="2.5" fill="#3B6FE8" opacity=".4"/>
+      </svg>
+    </div>
+    <span class="logo-text">GradeFlow</span>
+  </div>
+
+  <div class="sidebar-section-label">MENU</div>
+  <nav class="sidebar-nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"/></svg></span>
+      Dashboard
+    </button>
+    <button class="nav-btn" data-page="students" onclick="navigate('students')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" fill="currentColor"/><circle cx="11" cy="6" r="2" fill="currentColor" opacity=".5"/><path d="M1 13c0-2.761 2.239-4 5-4s5 1.239 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11 10c1.5.5 3 1.5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg></span>
+      Students
+    </button>
+    <button class="nav-btn" data-page="subjects" onclick="navigate('subjects')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="3" rx="1.5" fill="currentColor"/><rect x="2" y="7" width="9" height="2.5" rx="1.25" fill="currentColor" opacity=".6"/><rect x="2" y="11.5" width="6" height="2.5" rx="1.25" fill="currentColor" opacity=".35"/></svg></span>
+      Subjects
+    </button>
+    <button class="nav-btn" data-page="grades" onclick="navigate('grades')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 13L5 8l3 3 3-4 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Grades
+    </button>
+    <button class="nav-btn" data-page="report" onclick="navigate('report')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="1" width="10" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+      Reports
+    </button>
+  </nav>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-label">OVERVIEW</div>
+  <div class="sidebar-pills">
+    <div class="pill-row"><span class="pill-lbl">Students</span><span class="pill-val" id="sb-students">0</span></div>
+    <div class="pill-row"><span class="pill-lbl">Subjects</span><span class="pill-val" id="sb-subjects">0</span></div>
+    <div class="pill-row"><span class="pill-lbl">Pass Rate</span><span class="pill-val accent" id="sb-pass">—</span></div>
+    <div class="pill-row"><span class="pill-lbl">Class Avg</span><span class="pill-val accent" id="sb-avg">—</span></div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════════════ -->
+<main class="main-content">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-breadcrumb" id="page-sub">Overview of all students</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-primary" id="topbarAction" onclick="topbarActionFn()">+ Add Student</button>
+    </div>
+  </header>
+
+  <!-- ═══ DASHBOARD ═══════════════════════════════════════════════ -->
+  <section class="page active" id="page-dashboard">
+    <div class="kpi-strip" id="kpiStrip"></div>
+    <div class="dash-grid">
+      <div class="card chart-card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Student Performance</div>
+            <div class="card-sub">Average score per student</div>
+          </div>
+          <select class="chip-select" id="chartSubjectFilter" onchange="renderBarChart()">
+            <option value="all">All Subjects</option>
+          </select>
+        </div>
+        <div class="bar-chart-area" id="barChartArea"></div>
+      </div>
+
+      <div class="card dist-card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Grade Distribution</div>
+            <div class="card-sub">By letter grade</div>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <canvas id="donutCanvas" width="160" height="160"></canvas>
+          <div class="donut-hole">
+            <span class="dh-val" id="dhVal">—</span>
+            <span class="dh-lbl">avg</span>
+          </div>
+        </div>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+
+      <div class="card leaderboard-card">
+        <div class="card-head">
+          <div class="card-title">🏆 Top Performers</div>
+          <div class="card-sub">Ranked by overall average</div>
+        </div>
+        <div id="leaderboardList"></div>
+      </div>
+
+      <div class="card subjects-overview-card">
+        <div class="card-head">
+          <div class="card-title">Subject Averages</div>
+          <div class="card-sub">Class mean per subject</div>
+        </div>
+        <div id="subjectAveragesList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STUDENTS ═════════════════════════════════════════════════ -->
+  <section class="page" id="page-students">
+    <div class="toolbar">
+      <input class="inp search-inp" type="text" id="stuSearch" placeholder="Search by name or ID…" oninput="renderStudents()"/>
+      <select class="inp chip-select" id="stuFilterGrade" onchange="renderStudents()">
+        <option value="">All Grades</option>
+        <option value="A">Grade A</option>
+        <option value="B">Grade B</option>
+        <option value="C">Grade C</option>
+        <option value="D">Grade D</option>
+        <option value="F">Grade F</option>
+      </select>
+    </div>
+    <div class="student-grid" id="studentGrid"></div>
+  </section>
+
+  <!-- ═══ SUBJECTS ═════════════════════════════════════════════════ -->
+  <section class="page" id="page-subjects">
+    <div class="toolbar">
+      <input class="inp search-inp" type="text" id="subSearch" placeholder="Search subjects…" oninput="renderSubjects()"/>
+    </div>
+    <div class="subjects-grid" id="subjectsGrid"></div>
+  </section>
+
+  <!-- ═══ GRADES ═══════════════════════════════════════════════════ -->
+  <section class="page" id="page-grades">
+    <div class="toolbar">
+      <select class="inp" id="gradeStudentSel" onchange="renderGradePanel()" style="max-width:220px">
+        <option value="">— Select Student —</option>
+      </select>
+      <select class="inp" id="gradeSubjectSel" onchange="renderGradePanel()" style="max-width:200px">
+        <option value="">— Select Subject —</option>
+      </select>
+    </div>
+    <div id="gradePanelArea"><div class="empty-hero">Select a student and subject above to manage grades.</div></div>
+  </section>
+
+  <!-- ═══ REPORT ════════════════════════════════════════════════════ -->
+  <section class="page" id="page-report">
+    <div class="toolbar" style="justify-content:space-between">
+      <select class="inp" id="reportSubjectFilter" onchange="renderReport()" style="max-width:200px">
+        <option value="all">All Subjects</option>
+      </select>
+      <button class="btn btn-outline" onclick="window.print()">🖨 Print Report</button>
+    </div>
+    <div id="reportArea"></div>
+  </section>
+
+</main>
+
+<!-- ══ MODAL ═════════════════════════════════════════════════════════ -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <div class="modal-head">
+    <div class="modal-title" id="modalTitle">Add Student</div>
+    <button class="modal-x" onclick="closeModal()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="modal-body" id="modalBody"></div>
+  <div class="modal-foot" id="modalFoot"></div>
+</div>
+
+<!-- ══ TOAST ═════════════════════════════════════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
